@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A play mark sitting on a "harbor" line. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M45,34 L45,66 L71,50 Z" />
+    <path
+        android:fillColor="#FFFDBA74"
+        android:pathData="M36,72 L72,72 Q74,72 74,74 L74,75 Q74,77 72,77 L36,77 Q34,77 34,75 L34,74 Q34,72 36,72 Z" />
+</vector>

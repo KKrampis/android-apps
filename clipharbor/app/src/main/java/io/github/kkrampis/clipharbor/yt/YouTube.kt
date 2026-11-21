@@ -1,0 +1,210 @@
+package io.github.kkrampis.clipharbor.yt
+
+import androidx.core.text.HtmlCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import org.schabi.newpipe.extractor.Image
+import org.schabi.newpipe.extractor.InfoItem
+import org.schabi.newpipe.extractor.NewPipe
+import org.schabi.newpipe.extractor.Page
+import org.schabi.newpipe.extractor.ServiceList
+import org.schabi.newpipe.extractor.StreamingService
+import org.schabi.newpipe.extractor.channel.ChannelInfo
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabInfo
+import org.schabi.newpipe.extractor.channel.tabs.ChannelTabs
+import org.schabi.newpipe.extractor.kiosk.KioskInfo
+import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler
+import org.schabi.newpipe.extractor.search.SearchInfo
+import org.schabi.newpipe.extractor.stream.AudioStream
+import org.schabi.newpipe.extractor.stream.Description
+import org.schabi.newpipe.extractor.stream.StreamInfo
+import org.schabi.newpipe.extractor.stream.StreamInfoItem
+import org.schabi.newpipe.extractor.stream.StreamType
+import org.schabi.newpipe.extractor.stream.VideoStream
+
+data class VideoItem(
+    val url: String,
+    val title: String,
+    val uploader: String,
+    val uploaderUrl: String?,
+    val thumbnail: String?,
+    val durationSec: Long,
+    val views: Long = -1,
+    val uploaded: String? = null,
+)
+
+/** One page of results plus a way to fetch the following page, if any. */
+class PageResult(
+    val items: List<VideoItem>,
+    val next: (suspend () -> PageResult)?,
+)
+
+class StreamDetails(
+    val video: VideoItem,
+    val description: String,
+    val views: Long,
+    val likes: Long,
+    val uploaded: String?,
+    val uploaderAvatar: String?,
+    val isLive: Boolean,
+    val hlsUrl: String?,
+    val muxed: List<VideoStream>,
+    val videoOnly: List<VideoStream>,
+    val audio: List<AudioStream>,
+    val related: List<VideoItem>,
+)
+
+class ChannelDetails(
+    val name: String,
+    val avatar: String?,
+    val banner: String?,
+    val subscribers: Long,
+    val description: String,
+    val first: PageResult,
+)
+
+/** Anonymous access to YouTube via NewPipeExtractor. All calls run on the IO dispatcher. */
+object YouTube {
+    private val service: StreamingService get() = ServiceList.YouTube
+
+    fun init(client: OkHttpClient) {
+        NewPipe.init(NpDownloader(client))
+    }
+
+    suspend fun search(query: String): PageResult = withContext(Dispatchers.IO) {
+        val handler = service.searchQHFactory.fromQuery(query, listOf("videos"), "")
+        val info = SearchInfo.getInfo(service, handler)
+        PageResult(info.relatedItems.toVideos(), info.nextPage.nextSearch(handler))
+    }
+
+    private fun Page?.nextSearch(
+        handler: org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler,
+    ): (suspend () -> PageResult)? {
+        val page = this ?: return null
+        if (!Page.isValid(page)) return null
+        return {
+            withContext(Dispatchers.IO) {
+                val more = SearchInfo.getMoreItems(service, handler, page)
+                PageResult(more.items.toVideos(), more.nextPage.nextSearch(handler))
+            }
+        }
+    }
+
+    suspend fun suggestions(query: String): List<String> = withContext(Dispatchers.IO) {
+        if (query.isBlank()) emptyList() else service.suggestionExtractor.suggestionList(query)
+    }
+
+    /** The service's default feed. Falls back to a plain search if YouTube no longer offers one. */
+    suspend fun trending(): PageResult = withContext(Dispatchers.IO) {
+        try {
+            val url = service.kioskList.defaultKioskExtractor.url
+            val info = KioskInfo.getInfo(service, url)
+            val items = info.relatedItems.toVideos()
+            if (items.isEmpty()) error("empty feed")
+            PageResult(items, info.nextPage.nextKiosk(url))
+        } catch (e: Exception) {
+            search("trending today")
+        }
+    }
+
+    private fun Page?.nextKiosk(url: String): (suspend () -> PageResult)? {
+        val page = this ?: return null
+        if (!Page.isValid(page)) return null
+        return {
+            withContext(Dispatchers.IO) {
+                val more = KioskInfo.getMoreItems(service, url, page)
+                PageResult(more.items.toVideos(), more.nextPage.nextKiosk(url))
+            }
+        }
+    }
+
+    suspend fun channel(url: String): ChannelDetails = withContext(Dispatchers.IO) {
+        val info = ChannelInfo.getInfo(service, url)
+        val tab = info.tabs.firstOrNull { it.contentFilters.contains(ChannelTabs.VIDEOS) }
+            ?: info.tabs.firstOrNull()
+        val first = if (tab != null) {
+            val tabInfo = ChannelTabInfo.getInfo(service, tab)
+            PageResult(tabInfo.relatedItems.toVideos(), tabInfo.nextPage.nextTab(tab))
+        } else {
+            PageResult(emptyList(), null)
+        }
+        ChannelDetails(
+            name = info.name ?: "",
+            avatar = info.avatars.bestUrl(),
+            banner = info.banners.bestUrl(maxHeight = 2000),
+            subscribers = info.subscriberCount,
+            description = info.description ?: "",
+            first = first,
+        )
+    }
+
+    private fun Page?.nextTab(tab: ListLinkHandler): (suspend () -> PageResult)? {
+        val page = this ?: return null
+        if (!Page.isValid(page)) return null
+        return {
+            withContext(Dispatchers.IO) {
+                val more = ChannelTabInfo.getMoreItems(service, tab, page)
+                PageResult(more.items.toVideos(), more.nextPage.nextTab(tab))
+            }
+        }
+    }
+
+    suspend fun stream(url: String): StreamDetails = withContext(Dispatchers.IO) {
+        val info = StreamInfo.getInfo(service, url)
+        val video = VideoItem(
+            url = info.url ?: url,
+            title = info.name ?: "",
+            uploader = info.uploaderName ?: "",
+            uploaderUrl = info.uploaderUrl,
+            thumbnail = info.thumbnails.bestUrl(),
+            durationSec = info.duration,
+            views = info.viewCount,
+            uploaded = info.textualUploadDate,
+        )
+        StreamDetails(
+            video = video,
+            description = info.description.toPlainText(),
+            views = info.viewCount,
+            likes = info.likeCount,
+            uploaded = info.textualUploadDate,
+            uploaderAvatar = info.uploaderAvatars.bestUrl(),
+            isLive = info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM,
+            hlsUrl = info.hlsUrl?.takeIf { it.isNotBlank() },
+            muxed = info.videoStreams ?: emptyList(),
+            videoOnly = info.videoOnlyStreams ?: emptyList(),
+            audio = info.audioStreams ?: emptyList(),
+            related = (info.relatedItems ?: emptyList()).toVideos(),
+        )
+    }
+}
+
+private fun List<InfoItem>.toVideos(): List<VideoItem> =
+    filterIsInstance<StreamInfoItem>().map { it.toVideo() }.distinctBy { it.url }
+
+fun StreamInfoItem.toVideo() = VideoItem(
+    url = url,
+    title = name ?: "",
+    uploader = uploaderName ?: "",
+    uploaderUrl = uploaderUrl,
+    thumbnail = thumbnails.bestUrl(),
+    durationSec = duration,
+    views = viewCount,
+    uploaded = textualUploadDate,
+)
+
+fun List<Image>?.bestUrl(maxHeight: Int = 720): String? {
+    if (this.isNullOrEmpty()) return null
+    val sorted = sortedBy { it.height }
+    return (sorted.lastOrNull { it.height in 1..maxHeight } ?: sorted.last()).url
+}
+
+private fun Description?.toPlainText(): String {
+    val d = this ?: return ""
+    val content = d.content ?: return ""
+    return if (d.type == Description.HTML) {
+        HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
+    } else {
+        content.trim()
+    }
+}
