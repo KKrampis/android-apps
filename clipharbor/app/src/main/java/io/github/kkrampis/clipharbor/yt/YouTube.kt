@@ -79,7 +79,7 @@ object YouTube {
     }
 
     private fun Page?.nextSearch(
-        handler: org.schabi.newpipe.extractor.search.SearchQueryHandler,
+        handler: org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler,
     ): (suspend () -> PageResult)? {
         val page = this ?: return null
         if (!Page.isValid(page)) return null
