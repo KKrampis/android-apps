@@ -1,12 +1,12 @@
 package io.github.kkrampis.clipharbor.ui.screens
 
 import android.net.Uri
-import androidx.annotation.OptIn
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -83,41 +83,9 @@ fun DownloadsScreen(onPlay: (Long) -> Unit, onOpenPage: (String) -> Unit, onSett
                 "Downloads you start from a video page land here, sorted into folders.",
                 Modifier.padding(pad),
             )
-            return@Scaffold
-        }
-        val groups = all.groupBy { it.folder }
-        LazyColumn(Modifier.padding(pad)) {
-            groups.forEach { (folder, items) ->
-                item(key = "folder:$folder") {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(Icons.Default.Folder, null, tint = MaterialTheme.colorScheme.primary)
-                        Column(Modifier.padding(start = 8.dp)) {
-                            Text(folder, style = MaterialTheme.typography.titleMedium)
-                            Text(
-                                "${Storage.ROOT}/$folder · ${items.size} item${if (items.size == 1) "" else "s"}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                }
-                items(items, key = { it.id }) { d ->
-                    DownloadRow(
-                        d,
-                        onClick = {
-                            if (d.status == DownloadStatus.DONE) onPlay(d.id) else onOpenPage(d.pageUrl)
-                        },
-                        onCancel = { scope.launch { repo.cancel(d.id) } },
-                        onRetry = { scope.launch { repo.retry(d.id) } },
-                        onDelete = { confirmDelete = d },
-                    )
-                }
-            }
+        } else {
+            DownloadList(all, pad, onPlay, onOpenPage, onCancel = { id -> scope.launch { repo.cancel(id) } },
+                onRetry = { id -> scope.launch { repo.retry(id) } }, onDelete = { confirmDelete = it })
         }
     }
 
@@ -134,6 +102,52 @@ fun DownloadsScreen(onPlay: (Long) -> Unit, onOpenPage: (String) -> Unit, onSett
             },
             dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text("Cancel") } },
         )
+    }
+}
+
+@Composable
+private fun DownloadList(
+    all: List<DownloadEntity>,
+    pad: PaddingValues,
+    onPlay: (Long) -> Unit,
+    onOpenPage: (String) -> Unit,
+    onCancel: (Long) -> Unit,
+    onRetry: (Long) -> Unit,
+    onDelete: (DownloadEntity) -> Unit,
+) {
+    val groups = all.groupBy { it.folder }
+    LazyColumn(Modifier.padding(pad)) {
+        groups.forEach { (folder, group) ->
+            item(key = "folder:$folder") {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Default.Folder, null, tint = MaterialTheme.colorScheme.primary)
+                    Column(Modifier.padding(start = 8.dp)) {
+                        Text(folder, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            "${Storage.ROOT}/$folder · ${group.size} item${if (group.size == 1) "" else "s"}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+            items(group, key = { it.id }) { d ->
+                DownloadRow(
+                    d,
+                    onClick = {
+                        if (d.status == DownloadStatus.DONE) onPlay(d.id) else onOpenPage(d.pageUrl)
+                    },
+                    onCancel = { onCancel(d.id) },
+                    onRetry = { onRetry(d.id) },
+                    onDelete = { onDelete(d) },
+                )
+            }
+        }
     }
 }
 
@@ -202,7 +216,7 @@ private fun DownloadRow(
 }
 
 /** Plays a finished download from shared storage. Works offline. */
-@OptIn(UnstableApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun LocalPlayerScreen(id: Long, onBack: () -> Unit) {
     val context = LocalContext.current

@@ -180,7 +180,7 @@ object YouTube {
 }
 
 private fun List<InfoItem>.toVideos(): List<VideoItem> =
-    filterIsInstance<StreamInfoItem>().map { it.toVideo() }
+    filterIsInstance<StreamInfoItem>().map { it.toVideo() }.distinctBy { it.url }
 
 fun StreamInfoItem.toVideo() = VideoItem(
     url = url,

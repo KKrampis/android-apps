@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.OptIn
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -93,7 +92,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@OptIn(UnstableApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
 class WatchViewModel(app: Application, val url: String) : AndroidViewModel(app) {
     private val c = app.container
 
@@ -234,18 +233,23 @@ fun WatchScreen(
                 .background(Color.Black),
         )
         val d = vm.details
-        when {
-            vm.error != null && d == null -> Column(Modifier.padding(24.dp)) {
-                Text(vm.error!!, color = MaterialTheme.colorScheme.error)
-                TextButton(onClick = { vm.load() }) { Text("Try again") }
+        val loadError = vm.error
+        if (d == null) {
+            if (loadError != null) {
+                Column(Modifier.padding(24.dp)) {
+                    Text(loadError, color = MaterialTheme.colorScheme.error)
+                    TextButton(onClick = { vm.load() }) { Text("Try again") }
+                }
+            } else {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center,
+                ) { CircularProgressIndicator() }
             }
-            d == null -> Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center,
-            ) { CircularProgressIndicator() }
-            else -> LazyColumn(Modifier.fillMaxSize()) {
+        } else {
+            LazyColumn(Modifier.fillMaxSize()) {
                 item(key = "info") {
                     VideoInfo(
                         d = d,

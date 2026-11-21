@@ -154,7 +154,7 @@ private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
                 "watch/{url}",
                 arguments = listOf(navArgument("url") { type = NavType.StringType }),
             ) { e ->
-                val url = e.arguments?.getString("url").orEmpty()
+                val url = Uri.decode(e.arguments?.getString("url").orEmpty())
                 WatchScreen(
                     url = url,
                     onOpen = { nav.openVideo(it.url) },
@@ -166,7 +166,7 @@ private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
                 arguments = listOf(navArgument("url") { type = NavType.StringType }),
             ) { e ->
                 ChannelScreen(
-                    url = e.arguments?.getString("url").orEmpty(),
+                    url = Uri.decode(e.arguments?.getString("url").orEmpty()),
                     onOpen = { nav.openVideo(it.url) },
                     onBack = { nav.popBackStack() },
                 )
