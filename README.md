@@ -6,6 +6,7 @@ that builds the APK and publishes it to [Releases](../../releases).
 | App | Folder | What it does |
 | --- | --- | --- |
 | ClipHarbor | [`clipharbor/`](clipharbor/) | Browse and search YouTube without an account, play, download into folders, save videos, build playlists and sync them to GitHub or jsonbin.io |
+| BookmarkVault | [`bookmarkvault/`](bookmarkvault/) | Android version of the BookmarkVault Chrome extension: a bookmark library on the phone that syncs with Chrome through jsonbin.io, with the same JSON format, import and export |
 
 ## Signing
 
