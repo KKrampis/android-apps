@@ -25,7 +25,7 @@ on the phone and syncs it with Chrome through JSONBin.io, using the same JSON fo
 a library pushed from Chrome pulls on the phone and the other way round. Exports JSON and
 Netscape HTML, and you can share any page from a browser to bookmark it.
 
-### SearchVault: private AI search with saved answers · `searchvault/` (in review, [#3](../../pull/3))
+### SearchVault: private AI search with saved answers · [`searchvault/`](searchvault/)
 
 Search with Google's AI Mode in a private browser view, with no Google account. Cookies
 and history are wiped before every search and sign-in is blocked. Every answer is saved
@@ -33,7 +33,7 @@ with its source links, so you can search, star, share or continue it later, and 
 archive syncs to JSONBin.io. An optional Gemini mode with your own API key gives answers
 with numbered citations.
 
-### SpokeMap: NYC and NJ biking with open data · `spokemap/` (in review, [#5](../../pull/5))
+### SpokeMap: NYC and NJ biking with open data · [`spokemap/`](spokemap/)
 
 A bike map for New York City and northern New Jersey built entirely on open data, with
 no keys or accounts. Its layers are OpenStreetMap bike lanes and paths, live Citi Bike

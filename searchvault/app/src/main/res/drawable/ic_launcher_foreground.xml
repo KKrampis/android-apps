@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A magnifier with an AI sparkle inside. -->
+    <path
+        android:strokeColor="#FF8AB4F8"
+        android:strokeWidth="5"
+        android:pathData="M36,50 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0" />
+    <path
+        android:strokeColor="#FF8AB4F8"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:pathData="M60,60 L72,72" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M50,40 C51,46 54,49 60,50 C54,51 51,54 50,60 C49,54 46,51 40,50 C46,49 49,46 50,40 Z" />
+</vector>
