@@ -33,12 +33,12 @@ with its source links, so you can search, star, share or continue it later, and 
 archive syncs to JSONBin.io. An optional Gemini mode with your own API key gives answers
 with numbered citations.
 
-### NYC/NJ bike map: biking with open data · coming soon
+### SpokeMap: NYC and NJ biking with open data · `spokemap/` (in review, [#5](../../pull/5))
 
-A biking map for New York City and northern New Jersey built entirely on open data:
-OpenStreetMap bike paths and lanes through the Overpass API, NYC Open Data bike routes,
-New Jersey bike and trail layers from NJGIN and NJTPA, and live Citi Bike dock and bike
-availability (including Jersey City and Hoboken).
+A bike map for New York City and northern New Jersey built entirely on open data, with
+no keys or accounts. Its layers are OpenStreetMap bike lanes and paths, live Citi Bike
+stations with dock and bike availability (including Jersey City and Hoboken), the NYC DOT
+bike network, and NJTPA bike level of traffic stress for northern New Jersey roads.
 
 ## Signing
 
