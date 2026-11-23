@@ -13,6 +13,11 @@
         android:theme="@style/Theme.SearchVault"
         tools:targetApi="35">
 
+        <!-- Do not send WebView usage statistics to Google. -->
+        <meta-data
+            android:name="android.webkit.WebView.MetricsOptOut"
+            android:value="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

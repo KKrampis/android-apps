@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,8 +45,8 @@ fun SettingsScreen(vm: SearchViewModel, state: SettingsUiState) {
 
         Section(
             "Gemini",
-            "Gemini answers by running Google searches and lists the pages it used. Get a free API key " +
-                "from Google AI Studio. It stays on this phone, encrypted.",
+            "Optional. Gemini answers by running Google searches and lists the pages it used. It needs an API key " +
+                "from Google AI Studio, which is tied to your Google account, so these searches are not anonymous.",
         ) {
             OutlinedTextField(
                 value = key,
@@ -77,10 +78,23 @@ fun SettingsScreen(vm: SearchViewModel, state: SettingsUiState) {
         }
 
         Section(
-            "Google AI Mode",
-            "The AI Mode tab opens Google's own AI Mode page (google.com, udm=50) inside the app. It needs no key. " +
-                "Sign in to Google there if AI Mode asks you to.",
-        ) {}
+            "Private AI Mode",
+            "AI Mode opens Google's own AI Mode page with no account and no key. Signing in is blocked, " +
+                "third-party cookies, location, Safe Browsing lookups and WebView usage reports are off.",
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Forget Google after every search", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "Wipes Google's cookies, cache and site data before each search and when the app starts, " +
+                            "so searches can't be linked by cookie. Google still sees your IP address.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(checked = state.privateMode, onCheckedChange = { vm.setPrivateMode(it) })
+            }
+        }
 
         Section("Device name", "Shown in the JSONBin data and used to name the bin.") {
             OutlinedTextField(

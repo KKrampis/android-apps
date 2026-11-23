@@ -36,6 +36,7 @@ data class SettingsUiState(
     val model: String,
     val geminiKey: String,
     val deviceName: String,
+    val privateMode: Boolean,
 )
 
 data class SyncUiState(
@@ -79,7 +80,7 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun say(kind: StatusKind, text: String) { _status.value = Status(kind, text) }
 
-    private fun readSettings() = SettingsUiState(settings.engine, settings.model, settings.geminiKey, settings.deviceName)
+    private fun readSettings() = SettingsUiState(settings.engine, settings.model, settings.geminiKey, settings.deviceName, settings.privateMode)
 
     private fun readSyncState() = SyncUiState(
         masterKey = settings.masterKey,
@@ -185,6 +186,11 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
         settings.model = model
         _settings.value = readSettings()
         say(StatusKind.Ok, if (key.isBlank()) "Gemini key removed" else "Gemini settings saved")
+    }
+
+    fun setPrivateMode(on: Boolean) {
+        settings.privateMode = on
+        _settings.value = readSettings()
     }
 
     fun setDeviceName(name: String) {

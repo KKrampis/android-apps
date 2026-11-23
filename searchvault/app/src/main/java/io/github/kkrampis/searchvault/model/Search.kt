@@ -5,11 +5,11 @@ import java.util.UUID
 
 /** Which service answered a turn. */
 enum class Engine(val id: String, val label: String) {
-    /** Gemini API with the Google Search tool: an AI answer grounded in live Google results. */
-    Gemini("gemini", "Gemini + Google Search"),
+    /** Google's own AI Mode page, opened anonymously in the app; the answer is read from the page. */
+    AiMode("aimode", "Google AI Mode"),
 
-    /** Google's own AI Mode page, opened in the app. */
-    AiMode("aimode", "Google AI Mode");
+    /** Gemini API with the Google Search tool: an AI answer grounded in live Google results. Needs an API key. */
+    Gemini("gemini", "Gemini + Google Search");
 
     companion object {
         fun from(id: String?) = entries.firstOrNull { it.id == id } ?: Gemini

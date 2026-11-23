@@ -18,12 +18,18 @@ class Settings(context: Context) {
         set(v) = prefs.edit().putString("deviceName", v.trim()).apply()
 
     var engine: Engine
-        get() = Engine.from(prefs.getString("engine", null))
+        // AI Mode is the default: it needs no account or key.
+        get() = prefs.getString("engine", null)?.let(Engine::from) ?: Engine.AiMode
         set(v) = prefs.edit().putString("engine", v.id).apply()
 
     var model: String
         get() = prefs.getString("model", null)?.takeIf { it.isNotBlank() } ?: Gemini.DEFAULT_MODEL
         set(v) = prefs.edit().putString("model", v.trim()).apply()
+
+    /** Wipe Google's cookies and site data before every AI Mode search. */
+    var privateMode: Boolean
+        get() = prefs.getBoolean("privateMode", true)
+        set(v) = prefs.edit().putBoolean("privateMode", v).apply()
 
     var geminiKey: String
         get() = secure.get("geminiKey").orEmpty()

@@ -42,7 +42,7 @@ import io.github.kkrampis.searchvault.ui.SearchViewModel
 import io.github.kkrampis.searchvault.ui.SettingsScreen
 import io.github.kkrampis.searchvault.ui.StatusKind
 import io.github.kkrampis.searchvault.ui.SyncScreen
-import io.github.kkrampis.searchvault.ui.createSearchWebView
+import io.github.kkrampis.searchvault.ui.PrivateWeb
 
 class MainActivity : ComponentActivity() {
     private val vm: SearchViewModel by viewModels()
@@ -65,7 +65,10 @@ class MainActivity : ComponentActivity() {
                 val snackbar = remember { SnackbarHostState() }
                 // One WebView for AI Mode, kept while switching tabs so the page is not reloaded.
                 val context = LocalContext.current
-                val webView = remember { createSearchWebView(context) }
+                val webView = remember {
+                    // Start every app session as a new, unknown visitor to Google.
+                    PrivateWeb.create(context).also { if (settings.privateMode) PrivateWeb.wipe(it) }
+                }
 
                 LaunchedEffect(status) {
                     val s = status ?: return@LaunchedEffect

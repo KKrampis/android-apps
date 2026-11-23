@@ -5,17 +5,32 @@ Ask Google's AI search from your phone, keep every question and answer, and sync
 
 ## Two ways to search
 
-| | **Gemini** (default) | **AI Mode** |
+| | **AI Mode** (default, anonymous) | **Gemini** (optional) |
 | --- | --- | --- |
-| What it is | The Gemini API with Google's built-in *Google Search* tool: Gemini runs real Google searches and answers from the results | Google's own AI Mode page (`google.com/search?udm=50`) inside the app |
-| Needs | A free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey) | Nothing (sign in to Google in the page if AI Mode asks) |
-| Answer | Formatted answer with numbered citations, the list of source pages, and the Google queries it ran | Google's page as is |
-| Follow-ups | In the app; earlier questions are sent along as context | Inside Google's page |
-| What gets saved | Question, answer, sources, queries, model, time | The question as soon as you search; tap **Save answer** to also keep the page's answer text and links |
+| What it is | Google's own AI Mode page (`google.com/search?udm=50`) inside the app | The Gemini API with Google's built-in *Google Search* tool |
+| Needs | Nothing: no account, no key | An API key from [Google AI Studio](https://aistudio.google.com/apikey), which is tied to your Google account |
+| What gets saved | The question right away; then the answer text and its source links, read from the page and saved automatically once Google stops writing (about 3 s of no change). **Save now** saves on demand | Question, answer with numbered citations, sources, the Google queries it ran, model, time |
+| Follow-ups | Inside Google's page; the newer page text is saved again | In the app; earlier questions are sent along as context |
 
-Gemini is the main route because it gives a clean, structured answer with sources that can be stored and synced
-reliably. Google has no public API for AI Mode itself, so the AI Mode tab is a web page, and what it saves is
-the page's text, which depends on how Google lays the page out.
+### How private AI Mode is
+
+With *Forget Google after every search* on (Settings, on by default):
+
+- Google's cookies, cache, history and site storage in the app are wiped before every search and when the app starts, so searches can't be linked by cookie.
+- Signing in is blocked; third-party cookies, location, Safe Browsing lookups and WebView usage reports are off.
+- A consent cookie set to "reject all" is added after each wipe, so visitors in Europe don't get the cookie page every time.
+
+What it can't hide: Google still sees your IP address and device/browser details, as with any private browser
+window. Use a VPN or Tor-based proxy on the phone if you need to hide the IP too.
+
+### Limits of reading the page
+
+- There is no public AI Mode API, so the app reads the page text and drops Google's menus and buttons. If Google
+  changes the page layout, saved answers may pick up extra lines or miss parts until the app is updated.
+- Formatting is saved as plain text (no tables or images). Links in the answer area are saved as sources.
+- Without cookies Google may sometimes show a captcha ("unusual traffic"), especially on VPNs; the app shows a
+  notice and you can solve it in the page. If the cookie page still appears, choose *Reject all*.
+- AI Mode may not be available in every country.
 
 ## Features
 
