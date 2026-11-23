@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A bicycle: two wheels and a frame, in bike-lane green. -->
+    <path
+        android:strokeColor="#FF4ADE80"
+        android:strokeWidth="3"
+        android:pathData="M27,61 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0" />
+    <path
+        android:strokeColor="#FF4ADE80"
+        android:strokeWidth="3"
+        android:pathData="M59,61 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0" />
+    <path
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M38,61 L52,61 L64,45 L47,45 L52,61 M47,45 L38,61 M64,45 L70,61 M64,45 L62,39 L67,39 M43,41 L51,41 M47,41 L47,45" />
+</vector>
