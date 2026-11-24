@@ -10,6 +10,7 @@ import io.github.kkrampis.clipharbor.download.DownloadRepository
 import io.github.kkrampis.clipharbor.sync.SyncService
 import io.github.kkrampis.clipharbor.sync.SyncSettings
 import io.github.kkrampis.clipharbor.sync.SyncWorker
+import io.github.kkrampis.clipharbor.transcribe.TranscriptRepository
 import io.github.kkrampis.clipharbor.yt.YouTube
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -65,6 +66,8 @@ class AppContainer(context: Context) {
     val sync = SyncService(http, syncSettings, library)
 
     val downloads = DownloadRepository(appContext, db)
+
+    val transcripts = TranscriptRepository(appContext, db)
 }
 
 val Context.container: AppContainer

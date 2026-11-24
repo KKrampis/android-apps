@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.HighQuality
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Subtitles
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -178,6 +179,7 @@ fun WatchScreen(
     url: String,
     onOpen: (VideoItem) -> Unit,
     onChannel: (String) -> Unit,
+    onTranscript: (url: String, title: String) -> Unit,
 ) {
     val context = LocalContext.current
     val app = context.applicationContext as Application
@@ -261,6 +263,7 @@ fun WatchScreen(
                         onPlaylist = { showPlaylist = true },
                         onDownload = { showDownload = true },
                         onQuality = { showQuality = true },
+                        onTranscript = { onTranscript(d.video.url, d.video.title) },
                         onShare = {
                             val send = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
@@ -324,6 +327,7 @@ private fun VideoInfo(
     onPlaylist: () -> Unit,
     onDownload: () -> Unit,
     onQuality: () -> Unit,
+    onTranscript: () -> Unit,
     onShare: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -403,6 +407,17 @@ private fun VideoInfo(
                         label = { Text(quality ?: "Quality") },
                         leadingIcon = {
                             Icon(Icons.Default.HighQuality, null, Modifier.size(AssistChipDefaults.IconSize))
+                        },
+                    )
+                }
+            }
+            if (!d.isLive) {
+                item {
+                    AssistChip(
+                        onClick = onTranscript,
+                        label = { Text("Transcript") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Subtitles, null, Modifier.size(AssistChipDefaults.IconSize))
                         },
                     )
                 }

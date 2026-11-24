@@ -87,3 +87,29 @@ object DownloadStatus {
     const val FAILED = "failed"
     const val CANCELLED = "cancelled"
 }
+
+@Entity(tableName = "transcripts")
+data class TranscriptEntity(
+    @PrimaryKey val url: String,
+    val title: String,
+    /** "captions" or "device". */
+    val source: String,
+    /** Caption language tag, or the speech model id. */
+    val language: String,
+    val text: String,
+    val status: String,
+    val progress: Float,
+    val error: String?,
+    val updatedAt: Long,
+)
+
+object TranscriptStatus {
+    const val QUEUED = "queued"
+    const val MODEL = "model"
+    const val AUDIO = "audio"
+    const val TRANSCRIBING = "transcribing"
+    const val DONE = "done"
+    const val FAILED = "failed"
+
+    fun isActive(status: String) = status != DONE && status != FAILED
+}

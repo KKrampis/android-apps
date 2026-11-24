@@ -116,4 +116,28 @@ interface DownloadDao {
 
     @Query("DELETE FROM downloads WHERE id = :id")
     suspend fun delete(id: Long)
+
+    @Query("SELECT * FROM downloads WHERE pageUrl = :url AND status = 'done' AND fileUri IS NOT NULL ORDER BY createdAt DESC LIMIT 1")
+    suspend fun finishedFor(url: String): DownloadEntity?
+}
+
+@Dao
+interface TranscriptDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(t: TranscriptEntity)
+
+    @Query("SELECT * FROM transcripts WHERE url = :url")
+    suspend fun get(url: String): TranscriptEntity?
+
+    @Query("SELECT * FROM transcripts WHERE url = :url")
+    fun observe(url: String): Flow<TranscriptEntity?>
+
+    @Query("UPDATE transcripts SET status = :status, progress = :progress WHERE url = :url")
+    suspend fun setProgress(url: String, status: String, progress: Float)
+
+    @Query("UPDATE transcripts SET status = :status, error = :error WHERE url = :url")
+    suspend fun setStatus(url: String, status: String, error: String?)
+
+    @Query("DELETE FROM transcripts WHERE url = :url")
+    suspend fun delete(url: String)
 }
