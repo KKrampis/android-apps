@@ -15,8 +15,10 @@ Actions workflow that builds the APK and publishes it to [Releases](../../releas
 
 Browse and search YouTube without the app, an account or an API key. Watch with
 quality selection and full screen, download videos or audio into folders you choose,
-save videos, build playlists, and sync them to GitHub or JSONBin.io. Sharing a YouTube
-link to ClipHarbor opens it there.
+save videos, build playlists, and sync them to GitHub or JSONBin.io. Get a transcript from
+YouTube's captions or with offline speech recognition on the phone, then send it to the
+Claude app or any local AI app to summarize or ask about. Sharing a YouTube link to
+ClipHarbor opens it there.
 
 ### BookmarkVault: bookmarks synced with Chrome · [`bookmarkvault/`](bookmarkvault/)
 

@@ -117,4 +117,10 @@ dependencies {
 
     // Reads YouTube pages anonymously, without an API key or a Google account.
     implementation("com.github.teamnewpipe:NewPipeExtractor:v0.26.5")
+
+    // Offline speech recognition for transcripts. Language models are downloaded on demand.
+    implementation("com.alphacephei:vosk-android:0.3.75") {
+        exclude(group = "net.java.dev.jna")
+    }
+    implementation("net.java.dev.jna:jna:5.18.1@aar")
 }

@@ -19,6 +19,21 @@ An Android app for watching YouTube without signing in.
 
   You can push by hand, import back, or turn on automatic push after each change.
   Keys are stored only on the phone, encrypted with the Android Keystore, and app backup is off.
+- **Transcripts.** Tap *Transcript* on a video (or the captions icon on a finished download) and pick a source:
+  - **YouTube captions:** the creator's subtitles or YouTube's auto-generated ones. This takes seconds.
+  - **Transcribe on this phone:** offline speech recognition with [Vosk](https://alphacephei.com/vosk/).
+    Nothing is sent to a server. Each language model (about 30 to 50 MB) downloads once the first time
+    you use it. It uses your finished download of the video if there is one, otherwise it fetches only
+    the audio. It runs in the background with a progress notification. Accuracy is good for clear
+    speech and weaker with music or crosstalk. Languages: English, Spanish, French, German, Italian,
+    Portuguese, Dutch, Russian, Turkish, Hindi, Japanese and Chinese. You can delete models in Settings.
+
+  Transcripts are saved on the phone, with a `[mm:ss]` timestamp every half minute or so.
+- **Send a transcript to an AI app.** Pick what you want (*Summarize*, *Key points*, *Ask about it*
+  or *Transcript only*). Then tap **Claude** to open the Claude app with the transcript (this shows
+  when Claude is installed), or **Share to AI app** for Android's share sheet. The share sheet
+  reaches any app that accepts text, including AI apps that run models on the phone. You can also
+  share it as a `.txt` file or copy it.
 - Share a YouTube link from any app to ClipHarbor to open it.
 
 Requires Android 8.0 or newer.

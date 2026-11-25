@@ -41,6 +41,7 @@ import io.github.kkrampis.clipharbor.ui.screens.LocalPlayerScreen
 import io.github.kkrampis.clipharbor.ui.screens.PlaylistScreen
 import io.github.kkrampis.clipharbor.ui.screens.SearchScreen
 import io.github.kkrampis.clipharbor.ui.screens.SettingsScreen
+import io.github.kkrampis.clipharbor.ui.screens.TranscriptScreen
 import io.github.kkrampis.clipharbor.ui.screens.WatchScreen
 import io.github.kkrampis.clipharbor.ui.theme.ClipHarborTheme
 
@@ -82,6 +83,8 @@ private val tabs = listOf(
 
 fun NavHostController.openVideo(url: String) = navigate("watch/${Uri.encode(url)}")
 fun NavHostController.openChannel(url: String) = navigate("channel/${Uri.encode(url)}")
+fun NavHostController.openTranscript(url: String, title: String = "") =
+    navigate("transcript/${Uri.encode(url)}?title=${Uri.encode(title)}")
 
 @Composable
 private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
@@ -144,6 +147,7 @@ private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
                 DownloadsScreen(
                     onPlay = { nav.navigate("local/$it") },
                     onOpenPage = { nav.openVideo(it) },
+                    onTranscript = { u, t -> nav.openTranscript(u, t) },
                     onSettings = { nav.navigate("settings") },
                 )
             }
@@ -159,6 +163,7 @@ private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
                     url = url,
                     onOpen = { nav.openVideo(it.url) },
                     onChannel = { nav.openChannel(it) },
+                    onTranscript = { u, t -> nav.openTranscript(u, t) },
                 )
             }
             composable(
@@ -168,6 +173,22 @@ private fun AppNav(sharedUrl: String?, onSharedConsumed: () -> Unit) {
                 ChannelScreen(
                     url = Uri.decode(e.arguments?.getString("url").orEmpty()),
                     onOpen = { nav.openVideo(it.url) },
+                    onBack = { nav.popBackStack() },
+                )
+            }
+            composable(
+                "transcript/{url}?title={title}",
+                arguments = listOf(
+                    navArgument("url") { type = NavType.StringType },
+                    navArgument("title") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
+            ) { e ->
+                TranscriptScreen(
+                    url = Uri.decode(e.arguments?.getString("url").orEmpty()),
+                    title = e.arguments?.getString("title").orEmpty(),
                     onBack = { nav.popBackStack() },
                 )
             }

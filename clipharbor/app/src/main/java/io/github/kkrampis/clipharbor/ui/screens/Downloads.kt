@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Subtitles
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -64,7 +65,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DownloadsScreen(onPlay: (Long) -> Unit, onOpenPage: (String) -> Unit, onSettings: () -> Unit) {
+fun DownloadsScreen(
+    onPlay: (Long) -> Unit,
+    onOpenPage: (String) -> Unit,
+    onTranscript: (url: String, title: String) -> Unit,
+    onSettings: () -> Unit,
+) {
     val repo = LocalContext.current.container.downloads
     val all by repo.all.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
@@ -84,8 +90,12 @@ fun DownloadsScreen(onPlay: (Long) -> Unit, onOpenPage: (String) -> Unit, onSett
                 Modifier.padding(pad),
             )
         } else {
-            DownloadList(all, pad, onPlay, onOpenPage, onCancel = { id -> scope.launch { repo.cancel(id) } },
-                onRetry = { id -> scope.launch { repo.retry(id) } }, onDelete = { confirmDelete = it })
+            DownloadList(
+                all, pad, onPlay, onOpenPage, onTranscript,
+                onCancel = { id -> scope.launch { repo.cancel(id) } },
+                onRetry = { id -> scope.launch { repo.retry(id) } },
+                onDelete = { confirmDelete = it },
+            )
         }
     }
 
@@ -111,6 +121,7 @@ private fun DownloadList(
     pad: PaddingValues,
     onPlay: (Long) -> Unit,
     onOpenPage: (String) -> Unit,
+    onTranscript: (url: String, title: String) -> Unit,
     onCancel: (Long) -> Unit,
     onRetry: (Long) -> Unit,
     onDelete: (DownloadEntity) -> Unit,
@@ -145,6 +156,7 @@ private fun DownloadList(
                     onCancel = { onCancel(d.id) },
                     onRetry = { onRetry(d.id) },
                     onDelete = { onDelete(d) },
+                    onTranscript = { onTranscript(d.pageUrl, d.title) },
                 )
             }
         }
@@ -158,6 +170,7 @@ private fun DownloadRow(
     onCancel: () -> Unit,
     onRetry: () -> Unit,
     onDelete: () -> Unit,
+    onTranscript: () -> Unit,
 ) {
     Row(
         Modifier
@@ -210,7 +223,10 @@ private fun DownloadRow(
                 IconButton(onClick = onRetry) { Icon(Icons.Default.Refresh, "Retry") }
                 IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, "Delete") }
             }
-            else -> IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, "Delete") }
+            else -> Row {
+                IconButton(onClick = onTranscript) { Icon(Icons.Default.Subtitles, "Transcript") }
+                IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, "Delete") }
+            }
         }
     }
 }

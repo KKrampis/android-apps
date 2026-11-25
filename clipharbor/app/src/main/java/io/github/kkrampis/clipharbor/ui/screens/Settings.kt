@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import io.github.kkrampis.clipharbor.BuildConfig
 import io.github.kkrampis.clipharbor.container
+import io.github.kkrampis.clipharbor.transcribe.SpeechModels
 import io.github.kkrampis.clipharbor.ui.components.friendlyError
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -128,6 +130,25 @@ fun SettingsScreen(onBack: () -> Unit) {
                     })
                 }
                 Hint("Runs a few seconds after a change, once the phone is online, to every service set up above.")
+            }
+
+            Section("Speech models for transcripts") {
+                val context = LocalContext.current
+                var installed by remember { mutableStateOf(SpeechModels.installed(context)) }
+                if (installed.isEmpty()) {
+                    Hint("None downloaded yet. A model downloads the first time you transcribe a video on the phone.")
+                } else {
+                    installed.forEach { m ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            val mb = SpeechModels.sizeOnDisk(context, m) / (1024 * 1024)
+                            Text("${m.language} · $mb MB", Modifier.weight(1f))
+                            TextButton(onClick = {
+                                SpeechModels.delete(context, m)
+                                installed = SpeechModels.installed(context)
+                            }) { Text("Delete") }
+                        }
+                    }
+                }
             }
 
             if (status.isNotBlank()) {
