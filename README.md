@@ -5,12 +5,23 @@ Each one covers an everyday activity with open data or without the official app:
 biking around NYC and New Jersey with open city data, browsing YouTube privately without
 the YouTube app or an account, keeping bookmarks in sync with Chrome, saving AI search
 answers without signing in to Google, and researching stocks and backtesting portfolios
-without a brokerage or finance account.
+without a brokerage or finance account. AppShelf, an app store for GitHub releases, installs
+and updates all of them.
 
 Every app lives in its own top-level folder, has its own README, and has its own GitHub
 Actions workflow that builds the APK and publishes it to [Releases](../../releases).
 
 ## The apps
+
+### AppShelf: an app store for GitHub releases · [`appshelf/`](appshelf/)
+
+Install every app in this repository from one place, without downloading APKs by hand. AppShelf
+reads this repository's Releases by default, shows each app with its latest version and release
+notes, installs it with one tap, and checks in the background for new versions of the apps you
+have, with a notification and **Update all**. Add any other GitHub repository by pasting or sharing
+its link. It works with repositories that hold one app or many, picks the right APK for the phone's
+processor, can install older versions, and takes an optional GitHub token for private repositories
+and higher rate limits. Install AppShelf first and it keeps the rest, and itself, up to date.
 
 ### ClipHarbor: private YouTube browsing · [`clipharbor/`](clipharbor/)
 
