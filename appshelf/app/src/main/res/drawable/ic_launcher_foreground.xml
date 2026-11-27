@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A shelf with three app tiles and a down arrow on the middle one. -->
+    <path android:fillColor="#FF4F9DF7" android:pathData="M32,40 h13 v13 h-13 z" />
+    <path android:fillColor="#FF8AB4F8" android:pathData="M48,34 h13 v19 h-13 z" />
+    <path android:fillColor="#FFB57BF2" android:pathData="M64,44 h13 v9 h-13 z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M28,57 h52 v5 h-52 z" />
+    <path
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M54,66 v12 M48,73 L54,79 L60,73" />
+</vector>
