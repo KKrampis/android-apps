@@ -3,8 +3,9 @@
 A collection of Android apps I've built, each from a one-shot prompt in Claude Opus 5.5.
 Each one covers an everyday activity with open data or without the official app:
 biking around NYC and New Jersey with open city data, browsing YouTube privately without
-the YouTube app or an account, keeping bookmarks in sync with Chrome, and saving AI search
-answers without signing in to Google.
+the YouTube app or an account, keeping bookmarks in sync with Chrome, saving AI search
+answers without signing in to Google, and researching stocks and backtesting portfolios
+without a brokerage or finance account.
 
 Every app lives in its own top-level folder, has its own README, and has its own GitHub
 Actions workflow that builds the APK and publishes it to [Releases](../../releases).
@@ -34,6 +35,15 @@ and history are wiped before every search and sign-in is blocked. Every answer i
 with its source links, so you can search, star, share or continue it later, and the
 archive syncs to JSONBin.io. An optional Gemini mode with your own API key gives answers
 with numbered citations.
+
+### StockVault: stocks, analysis and portfolio backtests · [`stockvault/`](stockvault/)
+
+Quotes, charts and key stats from Yahoo Finance and the Google Finance quote page, with
+analysis over time (returns, volatility, drawdowns, beta, moving averages, RSI). Save stocks
+in folders inside folders, build portfolios and backtest them with a starting amount, monthly
+additions and rebalancing against the S&P 500, and compare portfolios side by side. Find
+similar stocks with Google AI Mode in a private view, or with Claude: through the Claude app
+(share its answer back to save the stocks) or built in with your own API key. Syncs to JSONBin.io.
 
 ### SpokeMap: NYC and NJ biking with open data · [`spokemap/`](spokemap/)
 
