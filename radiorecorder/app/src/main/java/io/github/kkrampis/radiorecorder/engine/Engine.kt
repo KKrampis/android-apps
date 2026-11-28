@@ -122,7 +122,7 @@ class Engine private constructor(private val app: Context) {
             }
         }
         for ((id, st) in stations) {
-            if (id !in recorders) recorders[id] = StationRecorder(this, st).also { it.start() }
+            if (!recorders.containsKey(id)) recorders[id] = StationRecorder(this, st).also { it.start() }
         }
     }
 
