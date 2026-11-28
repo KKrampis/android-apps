@@ -4,9 +4,9 @@ A collection of Android apps I've built, each from a one-shot prompt in Claude O
 Each one covers an everyday activity with open data or without the official app:
 biking around NYC and New Jersey with open city data, browsing YouTube privately without
 the YouTube app or an account, keeping bookmarks in sync with Chrome, saving AI search
-answers without signing in to Google, and researching stocks and backtesting portfolios
-without a brokerage or finance account. AppShelf, an app store for GitHub releases, installs
-and updates all of them.
+answers without signing in to Google, researching stocks and backtesting portfolios
+without a brokerage or finance account, and recording internet radio to the Internet Archive.
+AppShelf, an app store for GitHub releases, installs and updates all of them.
 
 Every app lives in its own top-level folder, has its own README, and has its own GitHub
 Actions workflow that builds the APK and publishes it to [Releases](../../releases).
@@ -62,6 +62,16 @@ A bike map for New York City and northern New Jersey built entirely on open data
 no keys or accounts. Its layers are OpenStreetMap bike lanes and paths, live Citi Bike
 stations with dock and bike availability (including Jersey City and Hoboken), the NYC DOT
 bike network, and NJTPA bike level of traffic stress for northern New Jersey roads.
+
+### Radio Recorder: record internet radio and archive it · [`radiorecorder/`](radiorecorder/)
+
+Record internet radio stations in the background, around the clock or on a schedule, with
+weekly program slots, one-off recordings and a time zone per station. Recordings are split into
+one file per program when the stream's title changes, or every hour. Keep the original stream or
+re-encode it to AAC, then upload each recording to the Internet Archive, with a separate
+collection per station and tags for the date, time and program. A daily cleanup uploads anything
+pending before it deletes local copies, so storage never fills up. The Android version of the
+[Radio Recorder desktop app](https://github.com/KKrampis/radio-recorder-archive).
 
 ## Signing
 
